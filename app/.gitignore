@@ -1,0 +1,7 @@
+# Ignore all files in model directories except their README.md
+models/monocular_deployed/lib_cpu/*
+models/monocular_deployed/lib_gpu/*
+!models/monocular_deployed/README.md
+
+models/monocular_keras/*
+!models/monocular_keras/README.md
