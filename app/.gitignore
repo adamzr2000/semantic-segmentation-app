@@ -1,9 +1,9 @@
-# --- Keep these helper files in models ---
+# Ignore everything under models...
+models/**
+
+# ...except directories themselves and these keeper files
 !models/**/
 !models/**/.gitkeep
 !models/**/clean.sh
 !models/get_baseline_model.py
-
-# --- Ignore everything else under models ---
-models/**
 
