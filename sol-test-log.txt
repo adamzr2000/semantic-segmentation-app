@@ -1,0 +1,68 @@
+desire6g@xtreme:~/adam/semantic-segmentation-app$ ./run_sol_cpu.sh
+[INFO] Using CPU
+[INFO] MODEL=sol-cpu  ASSETS_DIR=models/sol_deeplabv3_resnet50/lib_cpu
+[INFO] torch=2.5.1+cpu, torchvision=0.20.1+cpu
+[INFO] CUDA available=False, cuDNN enabled=True, cuDNN version=None
+[INFO] Preloaded /lib/x86_64-linux-gnu/libsleefgnuabi.so.3 (RTLD_GLOBAL)
+[INFO] Preloaded /lib/x86_64-linux-gnu/libsleef.so.3 (RTLD_GLOBAL)
+[INFO] Preloaded /lib/x86_64-linux-gnu/libgomp.so.1 (RTLD_GLOBAL)
+[WARN] Could not preload /app/models/sol_deeplabv3_resnet50/lib_cpu/libsol-dnn-dnnl-deployment-0.8.0rc4-3.7.1.so: /app/models/sol_deeplabv3_resnet50/lib_cpu/libsol-dnn-dnnl-deployment-0.8.0rc4-3.7.1.so: undefined symbol: sol_exception_throw
+Traceback (most recent call last):
+  File "/app/main.py", line 156, in <module>
+    _sol = sol_mod.sol_deeplabv3_resnet50("models/sol_deeplabv3_resnet50/lib_cpu")
+  File "/app/models/sol_deeplabv3_resnet50/lib_cpu/deeplabv3_resnet50.py", line 46, in __init__
+    self.open()
+  File "/app/models/sol_deeplabv3_resnet50/lib_cpu/deeplabv3_resnet50.py", line 8, in open
+    self.lib = ctypes.CDLL(self.path + "/" + "libdeeplabv3_resnet50.so")
+  File "/usr/lib/python3.10/ctypes/__init__.py", line 374, in __init__
+    self._handle = _dlopen(self._name, mode)
+OSError: models/sol_deeplabv3_resnet50/lib_cpu/libdeeplabv3_resnet50.so: undefined symbol: Sleef_sqrtf1_u35
+
+
+desire6g@xtreme:~/adam/semantic-segmentation-app$ cat run_sol_cpu.sh
+#!/bin/bash
+#entrypoint="python3 test.py"
+
+#entrypoint="python3 main.py"
+
+entrypoint="/bin/bash"
+
+docker run \
+  -it \
+  --rm \
+  --name semantic-segmentation-app \
+  --hostname semantic-segmentation-app \
+  -v "$(pwd)"/app:/app \
+  -e MODEL=sol-cpu \
+  -e LD_LIBRARY_PATH=/app/models/sol_deeplabv3_resnet50/lib_cpu:${LD_LIBRARY_PATH} \
+  --privileged \
+  -p 5000:5000 \
+  --group-add video \
+  semantic-segmentation-app:latest \
+  $entrypoint
+desire6g@xtreme:~/adam/semantic-segmentation-app$ ./run_sol_cpu.sh
+root@semantic-segmentation-app:/app# ldd /app/models/sol_deeplabv3_resnet50/lib_cpu/libdeeplabv3_resnet50.so
+        linux-vdso.so.1 (0x00007fff695d5000)
+        libsleef.so.3 => /lib/x86_64-linux-gnu/libsleef.so.3 (0x00007f283e3c8000)
+        libsleefgnuabi.so.3 => /lib/x86_64-linux-gnu/libsleefgnuabi.so.3 (0x00007f283e329000)
+        libsol-dnn-dnnl-deployment-0.8.0rc4-3.7.1.so => /app/models/sol_deeplabv3_resnet50/lib_cpu/libsol-dnn-dnnl-deployment-0.8.0rc4-3.7.1.so (0x00007f283c32e000)
+        libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f283c102000)
+        libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f283c01b000)
+        libgomp.so.1 => /lib/x86_64-linux-gnu/libgomp.so.1 (0x00007f283bfcf000)
+        libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f283bfaf000)
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f283bd86000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f2847ddd000)
+root@semantic-segmentation-app:/app# ldd /app/models/sol_deeplabv3_resnet50/lib_cpu/
+.gitkeep                                      deeplabv3_resnet50_example.c
+__pycache__/                                  libdeeplabv3_resnet50.so
+deeplabv3_resnet50.h                          libsol-dnn-dnnl-deployment-0.8.0rc4-3.7.1.so
+deeplabv3_resnet50.py
+root@semantic-segmentation-app:/app# ldd /app/models/sol_deeplabv3_resnet50/lib_cpu/libsol-dnn-dnnl-deployment-0.8.0rc4-3.7.1.so
+        linux-vdso.so.1 (0x00007ffc6d3ca000)
+        libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f7d6dd8b000)
+        libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f7d6dca4000)
+        libgomp.so.1 => /lib/x86_64-linux-gnu/libgomp.so.1 (0x00007f7d6dc5a000)
+        libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f7d6dc3a000)
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f7d6da11000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f7d6ffbf000)
+root@semantic-segmentation-app:/app#

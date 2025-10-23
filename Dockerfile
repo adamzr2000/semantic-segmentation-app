@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libstdc++6 \
     libgomp1 \
-    libsleef-dev \
+    libsleef3 \
+    libtbb2 \    
     gdb \
     procinfo \
     python3-pip \
@@ -20,18 +21,22 @@ RUN apt-get update && apt-get install -y \
     wget \
     && apt-get clean
 
-# Install dependencies 
-RUN pip3 install --no-cache-dir \
-      keras==2.15.0 \
-      tensorflow==2.15.0 \
-      numpy \
-      huggingface_hub \
-      flask
 
-RUN pip3 install torch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/cpu
+# Upgrade pip first
+RUN python3 -m pip install --upgrade pip
 
+# Install torch/torchvision
+RUN pip3 install \
+	torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cpu
+
+RUN pip3 install \
+      numpy==1.26.4 \
+      pillow==10.4.0 \
+      opencv-python-headless==4.10.0.84 \
+      flask==3.0.3
 
 # Create a working directory
 WORKDIR /app
 
-COPY app/ /app/
+# Copy your app
+COPY app/ .

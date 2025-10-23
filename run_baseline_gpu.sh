@@ -1,4 +1,7 @@
 #!/bin/bash
+#entrypoint="python3 test.py"
+
+entrypoint="python3 main.py"
 
 docker run \
     -it \
@@ -8,7 +11,9 @@ docker run \
     -v "$(pwd)"/app:/app \
     --privileged \
     -p 5000:5000 \
+    --runtime=nvidia \
     --group-add video \
-    semantic-segmentation-app 
+    --gpus all \
+    semantic-segmentation-app:gpu \
+    $entrypoint
 
-echo "Done."

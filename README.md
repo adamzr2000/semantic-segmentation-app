@@ -1,83 +1,37 @@
+# Computer vision: Real-time Semantic Segmentation App
+
 ## Setup
 
-1. **Prepare models:**
+1. **Build the Docker image (CPU or GPU):**
 
-   ```bash
-   python3 app/models/download_keras_model.py
-   ```
+```bash
+./build.sh        # CPU
+./build.sh --gpu  # GPU
+```
 
-2. **Build the Docker image (CPU or GPU):**
+2. **Get models:**
 
-   ```bash
-   ./build.sh        # CPU
-   ./build.sh --gpu  # GPU
-   ```
+- Pytorch (baseline)
+```bash
+docker run --rm -it -v "./app/models":/models -w /models --entrypoint "" semantic-segmentation-app bash -lc "python3 get_baseline_model.py"
+```
 
-## Usage: Standalone Local Execution
+- SOL-optimized: Copy the corresponding files in the [app/models/sol_deeplabv3_resnet50/](app/models/sol_deeplabv3_resnet50/) folder
 
-* **Keras model (default):**
+3. **Run example:**
 
-  ```bash
-  ./start_app_cpu.sh python3 app.py -m default
-  ```
-
-* **SOL-optimized model (CPU):**
-
-  ```bash
-  ./start_app_cpu.sh python3 app.py -m deploy
-  ```
-
-* **Test mode (looped video, CPU):**
-
-  ```bash
-  ./start_app_cpu.sh python3 app.py -m deploy --test
-  ```
-
-* **Test mode with GPU:**
-
-  ```bash
-  ./start_app_gpu.sh python3 app.py -m deploy --test --gpu
-  ```
-
+```bash
+./run_baseline_cpu.sh
+```
 ---
-
-## Demo: Remote Execution with vAccel
-
-**On the GPU server:**
-
 ```bash
-./start_vaccel_server.sh
+./run_baseline_gpu.sh
+```
+---
+```bash
+./run_sol_cpu.sh
 ```
 
-This launches:
+Web interface at [http://10.5.1.21:5000/](http://10.5.1.21:5000/)
 
-* A GPU-enabled vAccel container on port `8192`
-* A CPU-only vAccel container on port `8193`
-
-**On the robot (client):**
-
-```bash
-./start_vaccel_robot.sh --rpc tcp://10.5.1.21:8192
-```
-
-Then, execute the app inside the container:
-
-* **Using GPU (remote):**
-
-  ```bash
-  docker exec -it vaccel-robot python3 app.py -m deploy --vaccel --gpu --test
-  ```
-
-* **Using CPU (remote):**
-
-  ```bash
-  docker exec -it vaccel-robot bash -c "export VACCEL_RPC_ADDRESS=tcp://10.5.1.21:8193 && python3 app.py -m deploy --vaccel --test"
-  ```
-
-## Web Interface
-
-Open your browser at [http://10.5.1.21:5554/](http://10.5.1.21:5554/) to view live video
-
-![input](./utils/input-video.png)
-![output](./utils/output-video.png)
-
+![web-ui](./utils/web-ui.png)

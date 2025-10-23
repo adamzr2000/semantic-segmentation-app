@@ -1,7 +1,9 @@
-# Ignore all files in model directories except their README.md
-models/monocular_deployed/lib_cpu/*
-models/monocular_deployed/lib_gpu/*
-!models/monocular_deployed/README.md
+# --- Keep these helper files in models ---
+!models/**/
+!models/**/.gitkeep
+!models/**/clean.sh
+!models/get_baseline_model.py
 
-models/monocular_keras/*
-!models/monocular_keras/README.md
+# --- Ignore everything else under models ---
+models/**
+
